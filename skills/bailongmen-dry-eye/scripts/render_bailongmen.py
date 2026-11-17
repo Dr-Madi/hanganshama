@@ -2,7 +2,7 @@
 """把摆龙门的 Markdown 成稿套进图库里医荟她的排版案例，输出公众号正文 HTML。
 
 排版、组件和 Markdown 规则完全复用 wechat-medical-writer/scripts/render_yihui.py，本脚本只在
-内存里把所用模板的品牌文字换成摆龙门，不改 styles.json。替换后正文里仍有“医荟她”时报错退出。
+内存里把所用模板的品牌文字换成函哥（文章署名；公众号名仍是摆龙门），不改 styles.json。替换后正文里仍有“医荟她”时报错退出。
 
 render_yihui.py 先在本脚本同目录找，找不到再到 ../../wechat-medical-writer/scripts/ 找。
 
@@ -20,7 +20,7 @@ for path in (HERE, os.path.join(HERE, '..', '..', 'wechat-medical-writer', 'scri
         break
 import render_yihui  # noqa: E402
 
-BRAND = '摆龙门'
+BRAND = '函哥'
 # 先换带栏目名的整句，再换剩下的品牌名
 REPLACEMENTS = [('医荟她健康 · 女性健康科普', BRAND + ' · 干眼科普'),
                 ('医荟她健康 · 晚安科普', BRAND + ' · 晚安科普'),

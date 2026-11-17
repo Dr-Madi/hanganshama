@@ -113,7 +113,7 @@ def render_paste(dst_dir, folder):
     text = md.read_text(encoding='utf-8')
     title = next((l[2:].strip() for l in text.splitlines() if l.startswith('# ')), md.stem)
     m = LAYOUT_REF.search((dst_dir / '配图需求.md').read_text(encoding='utf-8'))
-    layout = m.group(1) if m else ('layout-yihui-interview' if '**摆龙门答：**' in text else 'layout-current')
+    layout = m.group(1) if m else ('layout-yihui-interview' if ('**函哥答：**' in text or '**摆龙门答：**' in text) else 'layout-current')
     tmp = dst_dir / '.fragment.html'
     r = subprocess.run([sys.executable, str(RENDER), str(md), str(STYLES), str(tmp), '--layout', layout],
                        capture_output=True, text=True, encoding='utf-8')
