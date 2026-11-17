@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""把 personal-workbench 里配好图的摆龙门文章同步到本仓库，并生成粘贴版网页。
+"""把 personal-workbench 里配好图的函干啥嘛文章同步到本仓库，并生成粘贴版网页。
 
 云端任务把稿件和配图写进私有仓库 personal-workbench；私有仓库开不了免费 Pages，
 图片也没有公网地址，粘贴到公众号编辑器时会丢图。本脚本在作者电脑上定时运行：
@@ -8,7 +8,7 @@
 2. 同步 data/干眼公众号/ 的三个记录文件；
 3. 配图需求里列出的图都已生成的文章，复制正文、配图需求、imgs/、prompts/；
 4. 渲染 paste.html（图片改成 Pages 绝对地址，带「复制正文」按钮）和首页 index.html；
-5. 只提交这些路径，推送到 Dr-Madi/bailongmen。
+5. 只提交这些路径，推送到 Dr-Madi/hanganshama。
 
 用法：sync_from_workbench.py <personal-workbench 目录> [--dry-run]
 """
@@ -25,7 +25,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 SUBDIR = Path('data') / '干眼公众号'
-PAGES = 'https://dr-madi.github.io/bailongmen/'
+PAGES = 'https://dr-madi.github.io/hanganshama/'
 RECORDS = ['选题清单.md', '风格记录.md', '封面轮换.md']
 RENDER = REPO / 'skills' / 'bailongmen-dry-eye' / 'scripts' / 'render_bailongmen.py'
 STYLES = REPO / 'gallery' / 'styles.json'
@@ -83,7 +83,7 @@ PASTE_SHELL = '''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>{title} · 摆龙门粘贴版</title>
+<title>{title} · 函干啥嘛粘贴版</title>
 <style>
 body{{margin:0;background:#f2f2f2;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}}
 .bar{{position:sticky;top:0;z-index:9;background:#1f2a24;color:#fff;padding:10px 16px;font-size:14px;line-height:1.6}}
@@ -142,10 +142,10 @@ def render_index(dst_root, published):
         for s, t, f in reversed(done))
     (REPO / 'index.html').write_text('''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex"><title>摆龙门粘贴版</title>
+<meta name="robots" content="noindex"><title>函干啥嘛粘贴版</title>
 <style>body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;max-width:640px;margin:24px auto;padding:0 16px;line-height:1.8}
 small{color:#888}</style></head><body>
-<h1>摆龙门 · 干眼科普</h1><p>最新的在最上面。点进去后「复制正文」，到公众号编辑器粘贴，审读后手动发表。</p>
+<h1>函干啥嘛 · 干眼科普</h1><p>最新的在最上面。点进去后「复制正文」，到公众号编辑器粘贴，审读后手动发表。</p>
 <ul>
 %s
 </ul></body></html>
@@ -194,7 +194,7 @@ def main():
     else:
         git(REPO, 'add', '--', SUBDIR.as_posix(), 'index.html')
         if git(REPO, 'diff', '--cached', '--name-only'):
-            git(REPO, 'commit', '-q', '-m', 'sync: 同步摆龙门文章与粘贴版（%d 篇）' % len(published))
+            git(REPO, 'commit', '-q', '-m', 'sync: 同步函干啥嘛文章与粘贴版（%d 篇）' % len(published))
             git(REPO, 'push', '-q', 'origin', 'main')
             log('已推送：%s' % PAGES)
         else:

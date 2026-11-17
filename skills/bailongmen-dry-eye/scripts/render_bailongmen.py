@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""把摆龙门的 Markdown 成稿套进图库里医荟她的排版案例，输出公众号正文 HTML。
+"""把函干啥嘛的 Markdown 成稿套进图库里医荟她的排版案例，输出公众号正文 HTML。
 
 排版、组件和 Markdown 规则完全复用 wechat-medical-writer/scripts/render_yihui.py，本脚本只在
-内存里把所用模板的品牌文字换成函哥（文章署名；公众号名仍是摆龙门），不改 styles.json。替换后正文里仍有“医荟她”时报错退出。
+内存里把所用模板的品牌文字换成函哥（文章署名；公众号名是函干啥嘛），不改 styles.json。替换后正文里仍有“医荟她”时报错退出。
 
 render_yihui.py 先在本脚本同目录找，找不到再到 ../../wechat-medical-writer/scripts/ 找。
 
