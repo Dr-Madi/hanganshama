@@ -11,11 +11,12 @@ body{margin:0;background:#f2f2f2;font-family:-apple-system,"PingFang SC","Micros
 .bar .tip{opacity:.8;font-size:12px}
 .page{max-width:578px;margin:16px auto;background:#fff;padding:20px 16px}
 .cover{max-width:578px;margin:16px auto 0} .cover img{width:100%;display:block}
+#article img{cursor:pointer}
 </style></head><body>
 <div class="bar"><b>眼睛干涩、发红、像进了沙子，是不是得了干眼</b><br>
 <button id="copy-body">复制正文</button><button id="copy-title">复制标题</button>
 <a href="imgs/cover.png" download>下载封面</a> · <a href="https://dr-madi.github.io/hanganshama/">返回列表</a>
-<div class="tip">复制正文后到公众号编辑器里粘贴；封面单独上传。发表前请通读正文、核对配图和医学引用。<span id="msg"></span></div></div>
+<div class="tip">复制正文会把配图一起打包复制，到公众号编辑器里粘贴即可；个别图没粘上时，点一下那张图单独复制再粘贴。封面单独上传。发表前请通读正文、核对配图和医学引用。<span id="msg"></span></div></div>
 <div class="cover"><img src="imgs/cover.png" alt="封面"></div>
 <div class="page"><div id="article"><!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"></head><body><section style="text-align:left;justify-content:flex-start;display:flex;flex-flow:row;margin:10px 0;box-sizing:border-box;" data-yihui-component="函哥-栏目">
 <section style="display:inline-block;width:auto;vertical-align:top;align-self:flex-start;flex:0 0 auto;background-color:#F1F8FD;border-radius:20px;overflow:hidden;min-width:5%;max-width:100%;padding:0 12px;box-sizing:border-box;">
@@ -82,6 +83,15 @@ body{margin:0;background:#f2f2f2;font-family:-apple-system,"PingFang SC","Micros
 <script>
 function copyNode(node){var r=document.createRange();r.selectNodeContents(node);var s=getSelection();s.removeAllRanges();s.addRange(r);var ok=document.execCommand('copy');s.removeAllRanges();return ok}
 function say(t){document.getElementById('msg').textContent=' '+t}
-document.getElementById('copy-body').onclick=function(){say(copyNode(document.getElementById('article'))?'已复制正文':'复制失败，请手动全选正文复制')};
+// 公众号编辑器抓不到 github.io 的外链图，复制前把配图画成 JPEG 内嵌进正文
+function draw(src){return new Promise(function(ok,no){var im=new Image();im.onload=function(){var w=Math.min(im.naturalWidth,1080),h=Math.round(im.naturalHeight*w/im.naturalWidth),c=document.createElement('canvas');c.width=w;c.height=h;var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);ok(c)};im.onerror=function(){no(new Error(src))};im.src=src})}
+function packed(){var a=document.getElementById('article').cloneNode(true);a.removeAttribute('id');var imgs=[].slice.call(a.querySelectorAll('img'));return Promise.all(imgs.map(function(i){return draw(i.src).then(function(c){i.src=c.toDataURL('image/jpeg',0.9)})})).then(function(){return {node:a,n:imgs.length}})}
+function fallback(p){p.then(function(r){r.node.style.cssText='position:fixed;left:-9999px;top:0;width:578px';document.body.appendChild(r.node);var ok=copyNode(r.node);r.node.remove();say(ok?'已复制正文（含 '+r.n+' 张图）':'复制失败，请手动全选正文复制')},function(){say(copyNode(document.getElementById('article'))?'已复制正文，但配图打包失败，请点图单独复制':'复制失败，请手动全选正文复制')})}
+document.getElementById('copy-body').onclick=function(){
+say('正在打包配图…');var p=packed();
+if(!(window.ClipboardItem&&navigator.clipboard&&navigator.clipboard.write)){fallback(p);return}
+navigator.clipboard.write([new ClipboardItem({'text/html':p.then(function(r){return new Blob([r.node.innerHTML],{type:'text/html'})}),'text/plain':p.then(function(r){return new Blob([r.node.textContent],{type:'text/plain'})})})]).then(function(){p.then(function(r){say('已复制正文（含 '+r.n+' 张图）')})},function(){fallback(p)})};
+document.getElementById('article').onclick=function(e){var i=e.target;if(i.tagName!=='IMG')return;if(!(window.ClipboardItem&&navigator.clipboard&&navigator.clipboard.write)){say('浏览器不支持复制图片，请右键复制图片');return}
+navigator.clipboard.write([new ClipboardItem({'image/png':draw(i.src).then(function(c){return new Promise(function(ok){c.toBlob(ok,'image/png')})})})]).then(function(){say('已复制这张图，去编辑器里粘贴')},function(){say('复制图片失败，请右键复制图片')})};
 document.getElementById('copy-title').onclick=function(){var n=document.createElement('span');n.textContent="眼睛干涩、发红、像进了沙子，是不是得了干眼";document.body.appendChild(n);var ok=copyNode(n);n.remove();say(ok?'已复制标题':'复制失败')};
 </script></body></html>
